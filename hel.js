@@ -47,6 +47,26 @@ document.addEventListener('DOMContentLoaded', async () => {
    * - heliaFs.cat
    */
 })
+async function catFile () {
+        const textDecoder = new TextDecoder()
+        for await (const data of heliaFs.cat('bafkreigaknpexyvxt76zgkitavbwx6ejgfheup5oybpm77f3pxzrvwpfdi')) {
+          console.log(textDecoder.decode(data))
+        }
+      }
+      await catFile()
+
+ for (const [peerIdString, peer] of discoveredPeers.entries()) {
+        console.log(`${peerIdString}: ${peer.multiaddrs.toString()}`)
+      }
+    
+
+      const textEncoder = new TextEncoder()
+      const cid = await heliaFs.addFile({content: textEncoder.encode('Hello world!')})
+      for await (const event of helia.libp2p.dht.provide(cid)) {
+        console.log(event)
+      }
+    
+
 
 function ms2TimeString (a) {
   const k = a % 1e3
