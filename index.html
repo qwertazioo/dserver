@@ -44,6 +44,52 @@
 
     <h2>Some suggestions</h2>
 
+    <p>Try adding a new file:</p>
+
+    <pre><code class="language-javascript">
+      async function addFile () {
+        const textEncoder = new TextEncoder()
+        const cid = await heliaFs.addFile({content: textEncoder.encode('Hello world!')})
+        console.log('successfully stored', cid.toString())
+      }
+      await addFile()
+    </code></pre>
+
+    <p>
+      You can cat that same file. If you used the exact same string as above
+      ('Hello world!') you should have an hash like this:
+      'bafkreigaknpexyvxt76zgkitavbwx6ejgfheup5oybpm77f3pxzrvwpfdi'
+    </p>
+
+    <pre><code class="language-javascript">
+      async function catFile () {
+        const textDecoder = new TextDecoder()
+        for await (const data of heliaFs.cat('bafkreigaknpexyvxt76zgkitavbwx6ejgfheup5oybpm77f3pxzrvwpfdi')) {
+          console.log(textDecoder.decode(data))
+        }
+      }
+      await catFile()
+    </code></pre>
+
+    <p>
+      Display the multiaddrs of the peers you've discovered:
+    </p>
+    <pre><code class="language-javascript">
+      for (const [peerIdString, peer] of discoveredPeers.entries()) {
+        console.log(`${peerIdString}: ${peer.multiaddrs.toString()}`)
+      }
+    </code></pre>
+
+    <p>
+      Provide the CIDs you create (once you're connected to a peer)
+    </p>
+    <pre><code class="language-javascript">
+      const textEncoder = new TextEncoder()
+      const cid = await heliaFs.addFile({content: textEncoder.encode('Hello world!')})
+      for await (const event of helia.libp2p.dht.provide(cid)) {
+        console.log(event)
+      }
+    </code></pre>
 
     <hr />
     <h2>Event Log:</h2>
@@ -66,9 +112,7 @@
   <script src="https://cdn.jsdelivr.net/npm/blockstore-core@^4.0.0/dist/index.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/datastore-core@^9.0.0/dist/index.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@libp2p/kad-dht@^12.0.0/dist/index.min.js" defer></script>
-  <script src="hel.js" type="module" defer>
-    
-  </script>
+  <script src="hel.js" type="module" defer></script>
   <script nomodule>
     alert('Your browser does not support importing ESM modules')
   </script>
